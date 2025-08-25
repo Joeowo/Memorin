@@ -126,9 +126,54 @@ public class CategoryService {
             category.setSortOrder(request.getSortOrder());
         }
 
-        // 4. 如果名称发生变化，需要更新路径
-        if (!category.getName().equals(request.getName())) {
-            updateCategoryPath(category, request.getName(), userId);
+        // 4. 更新父分类ID
+        if (request.getParentId() != null) {
+            // 验证父分类是否存在
+            if (!request.getParentId().trim().isEmpty()) {
+                Category newParentCategory = categoryRepository.findByIdAndUserIdAndIsActive(
+                    request.getParentId(), userId, true)
+                    .orElseThrow(() -> new IllegalArgumentException("父分类不存在或已被删除"));
+                
+                // 检查是否会形成循环引用
+                if (request.getParentId().equals(categoryId)) {
+                    throw new IllegalArgumentException("分类不能作为自己的父分类");
+                }
+                
+                // 检查层级限制
+                int newLevel = newParentCategory.getLevel() + 1;
+                if (newLevel > 5) {
+                    throw new IllegalArgumentException("分类层级不能超过5级");
+                }
+                
+                // 检查同级分类名称是否重复
+                boolean nameExistsInNewParent = categoryRepository.existsByUserIdAndParentIdAndNameAndNotId(
+                    userId, request.getParentId(), request.getName(), categoryId);
+                if (nameExistsInNewParent) {
+                    throw new IllegalArgumentException("同级分类中已存在相同名称的分类");
+                }
+                
+                category.setParentId(request.getParentId());
+                category.setLevel(newLevel);
+                
+                // 更新分类路径
+                String newPath = generateCategoryPath(newParentCategory, request.getName());
+                updateCategoryPath(category, newPath, userId);
+            } else {
+                // 设置为空（顶级分类）
+                category.setParentId(null);
+                category.setLevel(1);
+                String newPath = generateCategoryPath(null, request.getName());
+                updateCategoryPath(category, newPath, userId);
+            }
+        } else if (!category.getName().equals(request.getName())) {
+            // 如果名称发生变化但parentId不变，需要更新路径
+            Category parentCategory = null;
+            if (category.getParentId() != null) {
+                parentCategory = categoryRepository.findByIdAndUserIdAndIsActive(
+                    category.getParentId(), userId, true).orElse(null);
+            }
+            String newPath = generateCategoryPath(parentCategory, request.getName());
+            updateCategoryPath(category, newPath, userId);
         }
 
         // 5. 保存更新

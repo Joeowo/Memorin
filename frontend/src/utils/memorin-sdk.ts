@@ -68,8 +68,12 @@ class MemorinaAPIClient {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseURL}${endpoint}`
     
+    // 获取JWT token
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+    
     const defaultHeaders = {
       'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
       ...options.headers
     }
 
@@ -581,6 +585,31 @@ export function handleAPIError(error: unknown): string {
     }
   }
   return '未知错误，请检查网络连接'
+}
+
+// ===== JWT认证工具 =====
+export class AuthManager {
+  static setToken(token: string): void {
+    localStorage.setItem('token', token)
+  }
+
+  static getToken(): string | null {
+    return localStorage.getItem('token') || sessionStorage.getItem('token')
+  }
+
+  static removeToken(): void {
+    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
+  }
+
+  static isAuthenticated(): boolean {
+    return !!this.getToken()
+  }
+
+  static getAuthHeaders(): Record<string, string> {
+    const token = this.getToken()
+    return token ? { 'Authorization': `Bearer ${token}` } : {}
+  }
 }
 
 // 默认导出

@@ -57,6 +57,7 @@
         <CategoryEditor 
           v-if="store.currentView === 'create-category'"
           :category="null"
+          :availableCategories="store.categories"
           @save="handleSaveCategory"
           @cancel="store.showCategories"
         />
@@ -65,6 +66,7 @@
         <CategoryEditor 
           v-if="store.currentView === 'edit-category'"
           :category="store.currentCategory"
+          :availableCategories="store.categories"
           @save="handleSaveCategory"
           @cancel="store.showCategories"
         />
@@ -125,14 +127,16 @@ async function handleSaveCategory(categoryData: Partial<CategoryData>) {
         name: categoryData.name!,
         description: categoryData.description,
         icon: categoryData.icon,
-        color: categoryData.color
+        color: categoryData.color,
+        parentId: categoryData.parentId
       })
     } else if (store.currentView === 'edit-category' && store.currentCategory?.id) {
       await store.updateCategory(store.currentCategory.id, {
         name: categoryData.name!,
         description: categoryData.description,
         icon: categoryData.icon,
-        color: categoryData.color
+        color: categoryData.color,
+        parentId: categoryData.parentId
       })
     }
     store.showCategories()
