@@ -149,7 +149,7 @@ export const useKnowledgeStore = defineStore('knowledge', {
     
     // ========== 分类管理方法 ==========
     
-    async createCategory(data: { name: string; description?: string; icon?: string; color?: string }) {
+    async createCategory(data: { name: string; description?: string; icon?: string; color?: string; parentId?: string }) {
       this.setLoading(true)
       this.clearError()
       try {
@@ -165,7 +165,7 @@ export const useKnowledgeStore = defineStore('knowledge', {
       }
     },
 
-    async updateCategory(id: string, data: { name: string; description?: string; icon?: string; color?: string }) {
+    async updateCategory(id: string, data: { name: string; description?: string; icon?: string; color?: string; parentId?: string }) {
       this.setLoading(true)
       this.clearError()
       try {
