@@ -68,8 +68,6 @@ const spinnerSize = computed(() => {
   bottom: -2px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 /* Primary variant - 蓝紫色渐变主题 */
@@ -182,9 +180,7 @@ const spinnerSize = computed(() => {
   margin: 0;
   font-weight: 500;
   text-align: center;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
   padding: 0.25rem 0.5rem;
   border-radius: 8px;
   border: 1px solid rgba(102, 126, 234, 0.1);

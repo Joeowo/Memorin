@@ -449,9 +449,7 @@ if (props.defaultSortColumn && props.defaultSortOrder) {
 <style scoped>
 .base-table-wrapper {
   width: 100%;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.98);
   border: 1px solid rgba(102, 126, 234, 0.2);
   border-radius: 20px;
   box-shadow: 
@@ -506,9 +504,7 @@ if (props.defaultSortColumn && props.defaultSortOrder) {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.95);
   z-index: 10;
   display: flex;
   align-items: center;
