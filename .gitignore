@@ -1,1 +1,2 @@
 infrastructure/nacos/target/*.jar
+backend/memorin-knowledge-service/logs/*.log
