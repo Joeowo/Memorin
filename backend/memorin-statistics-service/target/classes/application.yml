@@ -1,0 +1,155 @@
+# Memorin统计分析服务配置文件
+# 配置服务端口、数据库、Redis、微服务调用等核心功能
+server:
+  port: 8084
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: memorin-statistics-service
+  
+  # Nacos服务发现配置
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: memorin-dev
+        group: DEFAULT_GROUP
+        metadata:
+          version: 1.0.0
+          region: default
+          service-type: statistics-analysis
+          description: "Memorin统计分析服务 - 学习统计、趋势分析、智能建议"
+  
+  # 数据库配置 - MySQL 8.0
+  datasource:
+    url: jdbc:mysql://localhost:3306/memorin_statistics?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: memorin_user
+    password: memorin_2025
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: MemorinStatisticsPool
+      minimum-idle: 5
+      maximum-pool-size: 15
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+
+  # Redis配置 - 统计数据缓存
+  redis:
+    host: localhost
+    port: 6379
+    password: memorin_2025
+    database: 4  # 使用独立的数据库编号
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 8
+        min-idle: 2
+        max-wait: 2000ms
+
+  # JSON配置
+  jackson:
+    default-property-inclusion: NON_NULL
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+# 监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+
+# 日志配置
+logging:
+  level:
+    com.memorin.statistics: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/memorin-statistics-service.log
+    max-size: 100MB
+    max-history: 30
+
+# 微服务调用配置
+services:
+  user-service:
+    base-url: http://localhost:8081
+    timeout: 5000
+  knowledge-service:
+    base-url: http://localhost:8082
+    timeout: 5000
+  review-service:
+    base-url: http://localhost:8083
+    timeout: 5000
+
+# 统计服务配置
+memorin:
+  statistics:
+    # 缓存配置
+    cache:
+      overview-ttl: 3600  # 概览统计缓存1小时
+      trend-ttl: 7200     # 趋势分析缓存2小时
+      knowledge-ttl: 1800 # 知识点统计缓存30分钟
+      recommendation-ttl: 10800  # 推荐缓存3小时
+    
+    # 计算配置
+    calculation:
+      default-analysis-days: 30  # 默认分析天数
+      max-analysis-days: 365     # 最大分析天数
+      batch-size: 1000           # 批处理大小
+      thread-pool-size: 5        # 异步计算线程池大小
+    
+    # 预警配置
+    alert:
+      forgetting-risk-threshold: 0.7      # 遗忘风险阈值
+      learning-stagnation-days: 7         # 学习停滞天数
+      mistake-accumulation-threshold: 20   # 错题堆积阈值
+      efficiency-decline-threshold: 0.3    # 效率下降阈值
+
+# 分页配置
+spring.data.web.pageable:
+  default-page-size: 20
+  max-page-size: 100
+  one-indexed-parameters: false
+  page-parameter: page
+  size-parameter: size 

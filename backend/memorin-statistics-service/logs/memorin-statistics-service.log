@@ -1,0 +1,111 @@
+2025-08-18 18:30:49 [main] INFO  c.a.n.c.env.SearchableProperties - properties search order:PROPERTIES->JVM->ENV->DEFAULT_SETTING
+2025-08-18 18:30:49 [main] INFO  c.m.s.StatisticsServiceApplication - Starting StatisticsServiceApplication using Java 1.8.0_451 on WIN-C3D985L1HJN with PID 62056 (D:\CODE\memorin-demo\Memorin-rebuild\backend\memorin-statistics-service\target\classes started by Mechrevo in D:\CODE\memorin-demo\Memorin-rebuild\backend\memorin-statistics-service)
+2025-08-18 18:30:49 [main] DEBUG c.m.s.StatisticsServiceApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-18 18:30:49 [main] INFO  c.m.s.StatisticsServiceApplication - The following 1 profile is active: "dev"
+2025-08-18 18:30:50 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-08-18 18:30:50 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-18 18:30:50 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 3 ms. Found 0 JPA repository interfaces.
+2025-08-18 18:30:50 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-08-18 18:30:50 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-08-18 18:30:50 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 1 ms. Found 0 Redis repository interfaces.
+2025-08-18 18:30:50 [main] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=7d34ec3d-ce0a-3a33-aaee-e67af3c2a546
+2025-08-18 18:30:50 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8084 (http)
+2025-08-18 18:30:50 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-18 18:30:50 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-18 18:30:51 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-08-18 18:30:51 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1440 ms
+2025-08-18 18:30:51 [main] INFO  com.zaxxer.hikari.HikariDataSource - MemorinStatisticsPool - Starting...
+2025-08-18 18:30:51 [main] INFO  com.zaxxer.hikari.HikariDataSource - MemorinStatisticsPool - Start completed.
+2025-08-18 18:30:51 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:memorin_statistics'
+2025-08-18 18:30:51 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-18 18:30:51 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.15.Final
+2025-08-18 18:30:51 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-08-18 18:30:51 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2025-08-18 18:30:51 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-08-18 18:30:51 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-18 18:30:52 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-08-18 18:30:52 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 7 mappings in 'requestMappingHandlerMapping'
+2025-08-18 18:30:52 [main] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-08-18 18:30:52 [main] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-08-18 18:30:52 [main] DEBUG o.s.d.r.l.RedisMessageListenerContainer - Starting RedisMessageListenerContainer...
+2025-08-18 18:30:52 [main] DEBUG o.s.d.r.l.RedisMessageListenerContainer - Postpone listening for Redis messages until actual listeners are added.
+2025-08-18 18:30:53 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2025-08-18 18:30:53 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8084 (http) with context path ''
+2025-08-18 18:30:53 [main] INFO  c.a.n.p.a.s.c.ClientAuthPluginManager - [ClientAuthPluginManager] Load ClientAuthService com.alibaba.nacos.client.auth.impl.NacosClientAuthServiceImpl success.
+2025-08-18 18:30:53 [main] INFO  c.a.n.p.a.s.c.ClientAuthPluginManager - [ClientAuthPluginManager] Load ClientAuthService com.alibaba.nacos.client.auth.ram.RamClientAuthServiceImpl success.
+2025-08-18 18:30:54 [main] INFO  c.a.c.n.r.NacosServiceRegistry - nacos registry, DEFAULT_GROUP memorin-statistics-service 192.168.3.51:8084 register finished
+2025-08-18 18:30:54 [main] INFO  c.m.s.StatisticsServiceApplication - Started StatisticsServiceApplication in 5.669 seconds (JVM running for 5.939)
+2025-08-18 23:40:05 [main] INFO  c.a.n.c.env.SearchableProperties - properties search order:PROPERTIES->JVM->ENV->DEFAULT_SETTING
+2025-08-18 23:40:05 [main] INFO  c.m.s.StatisticsServiceApplication - Starting StatisticsServiceApplication using Java 1.8.0_451 on WIN-C3D985L1HJN with PID 35168 (D:\CODE\memorin-demo\Memorin-rebuild\backend\memorin-statistics-service\target\classes started by Mechrevo in D:\CODE\memorin-demo\Memorin-rebuild\backend\memorin-statistics-service)
+2025-08-18 23:40:05 [main] DEBUG c.m.s.StatisticsServiceApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-18 23:40:05 [main] INFO  c.m.s.StatisticsServiceApplication - The following 1 profile is active: "dev"
+2025-08-18 23:40:05 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-08-18 23:40:05 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-18 23:40:05 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 JPA repository interfaces.
+2025-08-18 23:40:05 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-08-18 23:40:05 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-08-18 23:40:05 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 1 ms. Found 0 Redis repository interfaces.
+2025-08-18 23:40:05 [main] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=7d34ec3d-ce0a-3a33-aaee-e67af3c2a546
+2025-08-18 23:40:06 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8084 (http)
+2025-08-18 23:40:06 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-18 23:40:06 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-18 23:40:06 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-08-18 23:40:06 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1423 ms
+2025-08-18 23:40:06 [main] INFO  com.zaxxer.hikari.HikariDataSource - MemorinStatisticsPool - Starting...
+2025-08-18 23:40:06 [main] INFO  com.zaxxer.hikari.HikariDataSource - MemorinStatisticsPool - Start completed.
+2025-08-18 23:40:06 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:memorin_statistics'
+2025-08-18 23:40:07 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-18 23:40:07 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.15.Final
+2025-08-18 23:40:07 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-08-18 23:40:07 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2025-08-18 23:40:07 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-08-18 23:40:07 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-18 23:40:07 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-08-18 23:40:07 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 7 mappings in 'requestMappingHandlerMapping'
+2025-08-18 23:40:07 [main] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-08-18 23:40:07 [main] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-08-18 23:40:08 [main] DEBUG o.s.d.r.l.RedisMessageListenerContainer - Starting RedisMessageListenerContainer...
+2025-08-18 23:40:08 [main] DEBUG o.s.d.r.l.RedisMessageListenerContainer - Postpone listening for Redis messages until actual listeners are added.
+2025-08-18 23:40:08 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2025-08-18 23:40:08 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8084 (http) with context path ''
+2025-08-18 23:40:08 [main] INFO  c.a.n.p.a.s.c.ClientAuthPluginManager - [ClientAuthPluginManager] Load ClientAuthService com.alibaba.nacos.client.auth.impl.NacosClientAuthServiceImpl success.
+2025-08-18 23:40:08 [main] INFO  c.a.n.p.a.s.c.ClientAuthPluginManager - [ClientAuthPluginManager] Load ClientAuthService com.alibaba.nacos.client.auth.ram.RamClientAuthServiceImpl success.
+2025-08-18 23:40:09 [main] INFO  c.a.c.n.r.NacosServiceRegistry - nacos registry, DEFAULT_GROUP memorin-statistics-service 192.168.3.51:8084 register finished
+2025-08-18 23:40:09 [main] INFO  c.m.s.StatisticsServiceApplication - Started StatisticsServiceApplication in 5.302 seconds (JVM running for 5.553)
+2025-08-18 23:40:24 [http-nio-8084-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-18 23:40:24 [http-nio-8084-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-08-18 23:40:24 [http-nio-8084-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-08-18 23:40:24 [http-nio-8084-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-08-18 23:40:24 [http-nio-8084-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-08-18 23:40:24 [http-nio-8084-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@5151accb
+2025-08-18 23:40:24 [http-nio-8084-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@3a0baec0
+2025-08-18 23:40:24 [http-nio-8084-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-08-18 23:40:24 [http-nio-8084-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2025-08-18 23:40:24 [http-nio-8084-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/health", parameters={}
+2025-08-18 23:40:24 [http-nio-8084-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2025-08-18 23:40:24 [http-nio-8084-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [org.springframework.boot.actuate.health.SystemHealth@4a542c08]
+2025-08-18 23:40:24 [http-nio-8084-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-18 23:40:25 [http-nio-8084-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/v3/api-docs", parameters={}
+2025-08-18 23:40:25 [http-nio-8084-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2025-08-18 23:40:25 [http-nio-8084-exec-3] INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 65 ms
+2025-08-18 23:40:25 [http-nio-8084-exec-3] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json]
+2025-08-18 23:40:25 [http-nio-8084-exec-3] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 48, 46, 49, 34, 44, 34, 105, 110, 10 (truncated)...]
+2025-08-18 23:40:25 [http-nio-8084-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-18 23:42:56 [http-nio-8084-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/health", parameters={}
+2025-08-18 23:42:56 [http-nio-8084-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2025-08-18 23:42:56 [http-nio-8084-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [org.springframework.boot.actuate.health.SystemHealth@55dea7ae]
+2025-08-18 23:42:56 [http-nio-8084-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-18 23:42:56 [http-nio-8084-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/v3/api-docs", parameters={}
+2025-08-18 23:42:56 [http-nio-8084-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2025-08-18 23:42:56 [http-nio-8084-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json]
+2025-08-18 23:42:56 [http-nio-8084-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 48, 46, 49, 34, 44, 34, 105, 110, 10 (truncated)...]
+2025-08-18 23:42:56 [http-nio-8084-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-18 23:43:08 [http-nio-8084-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/health", parameters={}
+2025-08-18 23:43:08 [http-nio-8084-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2025-08-18 23:43:08 [http-nio-8084-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [org.springframework.boot.actuate.health.SystemHealth@1e7faf00]
+2025-08-18 23:43:08 [http-nio-8084-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-18 23:43:09 [http-nio-8084-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/v3/api-docs", parameters={}
+2025-08-18 23:43:09 [http-nio-8084-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2025-08-18 23:43:09 [http-nio-8084-exec-4] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json]
+2025-08-18 23:43:09 [http-nio-8084-exec-4] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 48, 46, 49, 34, 44, 34, 105, 110, 10 (truncated)...]
+2025-08-18 23:43:09 [http-nio-8084-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK

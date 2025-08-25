@@ -1,0 +1,101 @@
+# Memorin API网关服务 - 开发环境配置
+# 专门用于开发调试，简化依赖以便快速启动
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: memorin-gateway
+  
+  cloud:
+    # Nacos服务发现配置
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: memorin-dev
+        group: DEFAULT_GROUP
+        metadata:
+          version: 1.0.0
+          region: default
+          service-type: api-gateway
+          description: "Memorin API网关服务 - 统一入口和路由管理"
+    
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      
+      # 全局CORS配置
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+      
+      # 路由配置已在代码中定义 (GatewayConfig.java)
+      # 移除YAML中的重复配置避免冲突
+
+# 禁用Redis（开发环境）
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 2000ms
+
+# 监控配置 - 开发环境
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,gateway
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+  health:
+    redis:
+      enabled: false  # 开发环境禁用Redis健康检查
+
+# 日志配置 - 开发环境更简洁
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    org.springframework.web: INFO
+    com.memorin.gateway: DEBUG
+    reactor.netty.http.server: INFO
+    org.springframework.http.server.reactive: INFO
+  pattern:
+    console: "%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# 网关服务配置
+memorin:
+  gateway:
+    # 服务发现配置
+    services:
+      user-service:
+        url: http://localhost:8081
+        health-check: /actuator/health
+      knowledge-service:
+        url: http://localhost:8082
+        health-check: /actuator/health
+      review-service:
+        url: http://localhost:8083
+        health-check: /actuator/health
+      statistics-service:
+        url: http://localhost:8084
+        health-check: /actuator/health
+    
+    # 超时配置
+    timeout:
+      connect: 5000
+      response: 30000
+    
+    # 重试配置
+    retry:
+      max-attempts: 3
+      backoff: 100 

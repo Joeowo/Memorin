@@ -1,0 +1,304 @@
+/* 统一布局管理系统 - 参考原项目设计 */
+
+/* 1. 全局容器类 - 多种容器选择 */
+.container {
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+  box-sizing: border-box;
+  /* 移除所有max-width限制，使用100%宽度 */
+}
+
+/* 移除冗余的container-limited类，使用统一的container管理 */
+
+/* 2. 内容网格容器 - 统一所有页面的网格布局 */
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+/* 3. 统计卡片网格 - 专门用于仪表盘统计 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+/* 4. 组件测试网格 - 专门用于组件展示 */
+.test-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+/* 5. 输入组件网格 - 专门用于表单组件展示 */
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+/* 6. 操作按钮网格 - 专门用于按钮组 */
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+/* 7. 表单网格 - 专门用于表单布局 */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+/* 8. 响应式断点管理 - 统一所有页面的响应式行为 */
+
+/* 超宽屏优化 (1920px-2559px) */
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .container {
+    padding: 0 60px;
+  }
+}
+
+/* 超宽屏优化 (1920px-2559px) */
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .content-grid,
+  .stats-grid,
+  .test-grid {
+    gap: 2.5rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  .test-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+  
+  .input-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+  
+  .action-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* 极宽屏优化 (2560px+) - 超宽显示器适配 */
+@media (min-width: 2560px) {
+  .container {
+    padding: 0 80px;
+  }
+  
+  .content-grid,
+  .stats-grid,
+  .test-grid {
+    gap: 3rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+  
+  .test-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+  
+  .input-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+  }
+  
+  .action-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+  }
+}
+
+/* 大屏优化 (1400px-1920px) */
+@media (min-width: 1400px) and (max-width: 1919px) {
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+  
+  .test-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  .action-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.2rem;
+  }
+}
+
+/* 中等屏幕 (1024px-1399px) */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .container {
+    padding: 0 30px;
+  }
+  
+  .stats-grid,
+  .test-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .input-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* 平板屏幕 (768px-1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    padding: 0 20px;
+  }
+  
+  .content-grid,
+  .stats-grid,
+  .test-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .input-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .action-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+}
+
+/* 手机屏幕 (480px-767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+  .container {
+    padding: 0 15px;
+  }
+  
+  .content-grid,
+  .stats-grid,
+  .test-grid,
+  .input-grid,
+  .action-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* 小屏手机 (320px-479px) */
+@media (max-width: 479px) {
+  .container {
+    padding: 0 10px;
+  }
+  
+  .content-grid,
+  .stats-grid,
+  .test-grid,
+  .input-grid,
+  .action-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* 9. 专用布局工具类 */
+
+/* 居中容器 - 移除max-width限制 */
+.center-container {
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+}
+
+/* 窄容器 - 移除max-width限制 */
+.narrow-container {
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+}
+
+/* 宽容器 - 移除max-width限制 */
+.wide-container {
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+}
+
+/* 无限宽容器 */
+.full-container {
+  width: 100%;
+  padding: 0 20px;
+}
+
+/* 10. 网格间距工具类 */
+.gap-sm { gap: 0.5rem !important; }
+.gap-md { gap: 1rem !important; }
+.gap-lg { gap: 1.5rem !important; }
+.gap-xl { gap: 2rem !important; }
+.gap-2xl { gap: 2.5rem !important; }
+
+/* 11. 内边距工具类 */
+.p-sm { padding: 1rem !important; }
+.p-md { padding: 1.5rem !important; }
+.p-lg { padding: 2rem !important; }
+.p-xl { padding: 2.5rem !important; }
+
+/* 12. 外边距工具类 */
+.mb-sm { margin-bottom: 1rem !important; }
+.mb-md { margin-bottom: 1.5rem !important; }
+.mb-lg { margin-bottom: 2rem !important; }
+.mb-xl { margin-bottom: 2.5rem !important; }
+.mb-2xl { margin-bottom: 3rem !important; } 

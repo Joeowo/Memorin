@@ -1,0 +1,205 @@
+# Memorin知识管理服务配置文件
+# 配置服务端口、数据库、Redis、JWT验证等核心功能
+server:
+  port: 8082
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: memorin-knowledge-service
+  
+  # 数据库配置 - H2开发环境
+  datasource:
+    url: jdbc:h2:mem:memorin_knowledge;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+    hikari:
+      pool-name: MemorinKnowledgePool
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+
+  # H2控制台配置 - 开发环境使用
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: false
+
+  # Redis配置
+  redis:
+    host: localhost
+    port: 6379
+    password: memorin_2025
+    database: 2
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 8
+        min-idle: 2
+        max-wait: 2000ms
+
+  # JSON配置
+  jackson:
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+# JWT配置 - 用于验证用户服务的token
+jwt:
+  secret: MemorinJwtSecretKey2025!@#$%^&*()
+  header: Authorization
+  prefix: Bearer 
+
+# 监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+
+# 日志配置
+logging:
+  level:
+    com.memorin.knowledge: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/memorin-knowledge-service.log
+    max-size: 100MB
+    max-history: 30
+
+# 应用配置
+memorin:
+  knowledge:
+    # 知识点配置
+    knowledge-point:
+      max-tags: 10
+      max-difficulty: 5
+      max-estimated-time: 600  # 最大学习时间10小时(分钟)
+    
+    # 分类配置
+    category:
+      max-level: 5
+      max-children: 50
+      max-name-length: 100
+    
+    # 题型配置
+    question:
+      text:
+        max-question-length: 2000
+        max-answer-length: 5000
+        max-alternative-answers: 10
+      choice:
+        max-options: 10
+        max-option-length: 500
+      code:
+        max-code-length: 10000
+        supported-languages: 
+          - javascript
+          - python
+          - java
+          - cpp
+          - sql
+          - html
+          - css
+    
+    # 缓存配置
+    cache:
+      category-tree-ttl: 3600  # 分类树缓存1小时
+      knowledge-info-ttl: 1800  # 知识点信息缓存30分钟
+      search-result-ttl: 300   # 搜索结果缓存5分钟
+
+# 微服务配置
+microservice:
+  user-service:
+    base-url: http://localhost:8081
+    timeout: 5000
+    retry-count: 3
+
+# 分页配置
+spring.data.web.pageable:
+  default-page-size: 20
+  max-page-size: 100
+  one-indexed-parameters: false
+  page-parameter: page
+  size-parameter: size
+
+# 文件上传配置
+spring.servlet.multipart:
+  enabled: true
+  max-file-size: 10MB
+  max-request-size: 50MB
+  file-size-threshold: 2KB
+
+---
+# 生产环境配置
+spring.config.activate.on-profile: prod
+
+spring:
+  # 生产环境使用MySQL
+  datasource:
+    url: jdbc:mysql://localhost:3306/memorin_knowledge?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: memorin_knowledge
+    password: memorin_2025
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  # 生产环境关闭H2控制台
+  h2:
+    console:
+      enabled: false
+
+logging:
+  level:
+    com.memorin.knowledge: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN 

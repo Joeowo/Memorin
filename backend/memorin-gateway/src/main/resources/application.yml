@@ -1,0 +1,47 @@
+# Memorin API网关服务配置
+server:
+  port: 8080
+
+spring:
+  application:
+    name: memorin-gateway
+  
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      
+      # 全局CORS配置 - 修复allowCredentials问题
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+
+# 监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,gateway
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+
+# 日志配置 - 增加更详细的调试信息
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web: DEBUG
+    com.memorin.gateway: DEBUG
+    reactor.netty: DEBUG
+    org.springframework.http.server.reactive: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" 

@@ -1,0 +1,7 @@
+com\memorin\statistics\client\UserServiceClient.class
+com\memorin\statistics\client\KnowledgeServiceClient.class
+com\memorin\statistics\client\ReviewServiceClient.class
+com\memorin\statistics\controller\StatisticsController.class
+com\memorin\statistics\StatisticsServiceApplication.class
+com\memorin\statistics\service\impl\StatisticsServiceImpl.class
+com\memorin\statistics\service\StatisticsService.class

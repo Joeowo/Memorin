@@ -1,0 +1,117 @@
+# Memorin复习管理服务 - 开发环境配置
+# 专门用于开发调试，使用H2内存数据库快速启动
+
+server:
+  port: 8083
+
+spring:
+  application:
+    name: memorin-review-service
+  
+  # Nacos服务发现配置
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: memorin-dev
+        group: DEFAULT_GROUP
+        metadata:
+          version: 1.0.0
+          region: default
+          service-type: review-management
+          description: "Memorin复习管理服务 - SM-2算法、复习会话、错题管理"
+  
+  # H2内存数据库配置
+  datasource:
+    url: jdbc:h2:mem:review_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: memorin
+    password: memorin_review_2025
+  
+  # H2控制台配置
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: true
+
+  # JPA配置
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          time_zone: UTC
+
+  # 数据源初始化
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+
+# 监控配置 - 开发环境
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+  health:
+    defaults:
+      enabled: true
+
+# 日志配置 - 开发环境更简洁
+logging:
+  level:
+    com.memorin.review: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.web: INFO
+  pattern:
+    console: "%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# 复习算法配置（开发环境简化）
+review:
+  algorithm:
+    # SM-2算法参数
+    sm2:
+      min-ease-factor: 1.3
+      max-ease-factor: 3.0
+      error-penalty: 0.3
+      vague-penalty: 0.1
+      correct-reward: 0.15
+      error-review-delay-hours: 6
+    
+    # 批量处理限制
+    batch:
+      max-size: 50  # 开发环境减少批处理大小
+      
+    # 掌握度评估参数
+    mastery:
+      accuracy-weight: 0.7
+      ease-factor-weight: 0.3
+
+# 业务配置（开发环境）
+business:
+  # 复习会话配置
+  session:
+    max-duration-minutes: 60     # 开发环境缩短会话时长
+    auto-save-interval-minutes: 2 # 开发环境缩短保存间隔
+    
+  # 错题管理配置
+  mistake:
+    max-reasons: 5               # 开发环境减少错误原因数量
+    auto-resolve-threshold: 0.8
+
+# 开发环境标识
+environment: development 
