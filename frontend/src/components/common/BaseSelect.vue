@@ -1,7 +1,7 @@
 <template>
   <select
-    :value="modelValue"
-    @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
+    :value="modelValue ?? ''"
+    @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value === '' ? null : isNaN(Number(($event.target as HTMLSelectElement).value)) ? ($event.target as HTMLSelectElement).value : Number(($event.target as HTMLSelectElement).value))"
     :disabled="disabled"
     :class="['base-select', variant]"
   >
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 interface Props {
-  modelValue: string | number
+  modelValue: string | number | null
   options: any[]
   placeholder?: string
   disabled?: boolean
@@ -28,7 +28,7 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'update:modelValue', value: string | number): void
+  (e: 'update:modelValue', value: string | number | null): void
 }
 
 const props = withDefaults(defineProps<Props>(), {

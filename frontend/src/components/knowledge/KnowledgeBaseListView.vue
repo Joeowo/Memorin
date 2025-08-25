@@ -3,12 +3,14 @@
     <div class="section-header">
       <h3>📁 分类管理</h3>
       <div class="list-controls">
+        <label class="filter-label">层级：</label>
         <BaseSelect
           v-model="selectedLevel"
           :options="levelOptions"
-          placeholder="选择层级"
+          placeholder="所有层级"
           :disabled="store.loading"
           class="level-select"
+          @change="(value) => console.log('🎯 Level select changed to:', value, typeof value)"
         />
         <BaseInput
           v-model="searchQuery"
@@ -17,7 +19,26 @@
           :disabled="store.loading"
           class="search-input"
         />
+        <BaseButton
+          v-if="selectedLevel !== null || searchQuery"
+          @click="clearFilters"
+          variant="secondary"
+          size="small"
+          title="清除筛选"
+        >
+          🔄
+        </BaseButton>
       </div>
+    </div>
+    
+    <!-- 调试信息（开发环境可见） -->
+    <div v-if="isDev" class="debug-info">
+      <strong>调试信息：</strong><br>
+      总分类数：{{ store.categories.length }}<br>
+      筛选后分类数：{{ filteredCategories.length }}<br>
+      当前层级：{{ selectedLevel }}<br>
+      搜索词："{{ searchQuery }}"<br>
+      层级选项：{{ levelOptions.map(opt => opt.label).join(', ') }}
     </div>
     
     <!-- 空状态 -->
@@ -27,8 +48,12 @@
       <p v-if="searchQuery">
         没有找到包含 "{{ searchQuery }}" 的分类
       </p>
+      <p v-else-if="selectedLevel !== null">
+        当前层级没有分类，请选择其他层级或清除筛选
+      </p>
       <p v-else>
-        还没有创建任何分类，点击上方按钮创建第一个吧！
+        还没有创建任何分类，点击上方按钮创建第一个吧！r>
+        当前总分类数：{{ store.categories.length }}
       </p>
     </div>
     
@@ -223,7 +248,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useKnowledgeStore } from '@/stores/knowledgeStore'
 import type { CategoryData, KnowledgeData } from '@/utils/memorin-sdk'
 
@@ -239,36 +264,70 @@ const store = useKnowledgeStore()
 
 // 响应式数据
 const searchQuery = ref('')
-const selectedLevel = ref(1)
+const selectedLevel = ref<number | null>(null) // 默认显示所有层级
 const showCategoryFilter = ref(false)
 const selectedCategoryIds = ref<string[]>([])
 
 // 计算属性
 const levelOptions = computed(() => {
   const maxLevel = Math.max(...store.categories.map(cat => cat.level), 1)
-  return Array.from({ length: maxLevel }, (_, i) => ({
-    label: `Level ${i + 1}`,
-    value: i + 1
-  }))
+  const levelCounts = store.categories.reduce((acc, cat) => {
+    acc[cat.level] = (acc[cat.level] || 0) + 1
+    return acc
+  }, {} as Record<number, number>)
+  
+  return [
+    { label: '所有层级', value: null },
+    ...Array.from({ length: maxLevel }, (_, i) => {
+      const level = i + 1
+      const count = levelCounts[level] || 0
+      return {
+        label: `Level ${level} (${count})`,
+        value: level
+      }
+    })
+  ]
 })
 
 const filteredCategories = computed(() => {
-  let categories = store.categories
+  console.log('🔍 Filtering categories:', {
+    totalCategories: store.categories.length,
+    selectedLevel: selectedLevel.value,
+    searchQuery: searchQuery.value,
+    allCategories: store.categories.map(c => ({ id: c.id, name: c.name, level: c.level }))
+  })
+  
+  let categories = [...store.categories] // Create a copy to avoid mutation
+  
+  console.log('🎯 Before filtering:', categories.length)
   
   // 按层级筛选
-  if (selectedLevel.value) {
-    categories = categories.filter(category => category.level === selectedLevel.value)
+  if (selectedLevel.value !== null && selectedLevel.value !== undefined && !isNaN(Number(selectedLevel.value))) {
+    const targetLevel = Number(selectedLevel.value)
+    const levelCategories = categories.filter(category => {
+      const catLevel = Number(category.level)
+      const matches = catLevel === targetLevel
+      console.log(`📊 Level ${catLevel} vs ${targetLevel}: ${matches ? '✅' : '❌'} ${category.name}`)
+      return matches
+    })
+    console.log(`📈 After level filter (Level ${targetLevel}): ${levelCategories.length}`)
+    categories = levelCategories
+  } else if (selectedLevel.value === null || selectedLevel.value === undefined || isNaN(Number(selectedLevel.value))) {
+    console.log(`📈 Skipping level filter (selectedLevel: ${selectedLevel.value})`)
   }
   
   // 按搜索词筛选
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    categories = categories.filter(category => 
+    const searchCategories = categories.filter(category => 
       category.name.toLowerCase().includes(query) ||
       (category.description && category.description.toLowerCase().includes(query))
     )
+    console.log(`🔍 After search filter: ${searchCategories.length}`)
+    categories = searchCategories
   }
   
+  console.log(`✅ Final filtered count: ${categories.length}`)
   return categories
 })
 
@@ -396,6 +455,37 @@ function handleSearch() {
   // 搜索在计算属性中实时处理
 }
 
+function clearFilters() {
+  selectedLevel.value = null
+  searchQuery.value = ''
+}
+
+// 调试：监视筛选器变化
+watch(selectedLevel, (newLevel, oldLevel) => {
+  console.log('🔄 Level filter changed:', { old: oldLevel, new: newLevel })
+})
+
+watch(() => store.categories, (newCategories) => {
+  console.log('📦 Categories updated:', newCategories.length)
+  console.log('📊 Categories details:', newCategories.map(c => ({
+    id: c.id,
+    name: c.name,
+    level: c.level,
+    levelType: typeof c.level
+  })))
+}, { immediate: true })
+
+// 添加组件挂载时的调试
+import { onMounted } from 'vue'
+onMounted(() => {
+  console.log('🚀 KnowledgeBaseListView mounted')
+  console.log('📊 Store categories on mount:', store.categories.length)
+  if (store.categories.length === 0) {
+    console.log('⚠️ No categories loaded, triggering load...')
+    store.loadCategories()
+  }
+})
+
 function handleCategoryClick(category: CategoryData) {
   // 可以导航到分类详情或其他操作
   console.log('Category clicked:', category)
@@ -483,6 +573,13 @@ async function handleDeleteKnowledge(knowledge: KnowledgeData) {
 
 .level-select {
   min-width: 120px;
+}
+
+.filter-label {
+  color: #495057;
+  font-size: 0.9rem;
+  font-weight: 500;
+  align-self: center;
 }
 
 .search-input {
@@ -858,12 +955,13 @@ async function handleDeleteKnowledge(knowledge: KnowledgeData) {
 }
 
 .debug-info {
-  margin-top: 1rem;
-  padding: 0.5rem;
+  margin: 1rem 0;
+  padding: 1rem;
   background: #f0f8ff;
-  border-left: 3px solid #007bff;
+  border: 1px solid #007bff;
+  border-radius: 8px;
   color: #0066cc;
-  text-align: center;
   font-size: 0.8rem;
+  font-family: monospace;
 }
 </style> 
