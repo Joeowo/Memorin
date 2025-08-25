@@ -1,0 +1,31 @@
+[Vue warn]: Property "process" was accessed during render but is not defined on instance. 
+  at <BaseCard class="knowledge-base-list" > 
+  at <KnowledgeBaseListView key=0 > 
+  at <KnowledgeView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouterView > 
+  at <MainLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouterView > 
+  at <App> runtime-core.esm-bundler.js:51:13
+[Vue warn]: Unhandled error during execution of render function 
+  at <BaseCard class="knowledge-base-list" > 
+  at <KnowledgeBaseListView key=0 > 
+  at <KnowledgeView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouterView > 
+  at <MainLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouterView > 
+  at <App> runtime-core.esm-bundler.js:51:13
+[Vue warn]: Unhandled error during execution of component update 
+  at <RouterView > 
+  at <App> runtime-core.esm-bundler.js:51:13
+[Vue Router warn]: uncaught error during route navigation: vue-router.mjs:51:18
+TypeError: can't access property "env", _ctx.process is undefined
+    default KnowledgeBaseListView.vue:166
+    renderFnWithContext runtime-core.esm-bundler.js:692
+    renderSlot runtime-core.esm-bundler.js:3004
+    _sfc_render BaseCard.vue:10
+    renderComponentRoot runtime-core.esm-bundler.js:6560
+    componentUpdateFn runtime-core.esm-bundler.js:5351
+    run reactivity.esm-bundler.js:237
+    setupRenderEffect runtime-core.esm-bundler.js:5486
+    mountComponent runtime-core.esm-bundler.js:5260
+    processComponent runtime-core.esm-bundler.js:5213

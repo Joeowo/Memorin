@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn spring-boot:run:*)",
+      "Bash(curl:*)",
+      "Bash(mysql:*)",
+      "Bash(mvn:*)",
+      "Bash(java:*)",
+      "Bash(timeout:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "D:\\"
+    ]
+  }
+}

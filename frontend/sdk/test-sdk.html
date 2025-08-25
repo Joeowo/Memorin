@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorin SDK 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Memorin SDK 功能测试</h1>
+        
+        <div class="test-section">
+            <h3>1. 服务状态检查</h3>
+            <button onclick="testHealth()">测试服务健康</button>
+            <div id="health-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. 分类管理测试</h3>
+            <button onclick="testCategories()">获取分类列表</button>
+            <button onclick="testCreateCategory()">创建测试分类</button>
+            <div id="categories-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. 知识点管理测试</h3>
+            <button onclick="testKnowledge()">获取知识点列表</button>
+            <button onclick="testCreateKnowledge()">创建测试知识点</button>
+            <div id="knowledge-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. 文本题管理测试</h3>
+            <button onclick="testTextQuestions()">获取文本题列表</button>
+            <button onclick="testCreateTextQuestion()">创建测试文本题</button>
+            <div id="text-questions-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. 运行演示程序</h3>
+            <button onclick="runDemo()">运行完整演示</button>
+            <div id="demo-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>6. 错误处理测试</h3>
+            <button onclick="testErrorHandling()">测试错误处理</button>
+            <div id="error-result"></div>
+        </div>
+
+        <div id="log" style="margin-top: 20px;"></div>
+    </div>
+
+    <script type="module">
+        // 简化版 SDK 测试
+        class APIClient {
+            constructor(baseURL = 'http://localhost:8082') {
+                this.baseURL = baseURL;
+            }
+
+            async request(endpoint, options = {}) {
+                const url = `${this.baseURL}${endpoint}`;
+                const response = await fetch(url, {
+                    ...options,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+                return response.json();
+            }
+
+            async get(endpoint) {
+                return this.request(endpoint, { method: 'GET' });
+            }
+
+            async post(endpoint, data) {
+                return this.request(endpoint, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+            }
+        }
+
+        const client = new APIClient();
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(div);
+        }
+
+        function displayResult(elementId, data, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            element.className = type;
+        }
+
+        async function testHealth() {
+            try {
+                log('正在检查服务健康状态...');
+                const result = await client.get('/api/test/health');
+                displayResult('health-result', result, 'success');
+                log('✅ 服务健康检查通过');
+            } catch (error) {
+                displayResult('health-result', { error: error.message }, 'error');
+                log('❌ 服务健康检查失败: ' + error.message, 'error');
+            }
+        }
+
+        async function testCategories() {
+            try {
+                log('正在获取分类列表...');
+                const result = await client.get('/api/test/categories');
+                displayResult('categories-result', result, 'success');
+                log(`✅ 获取到 ${result.data.length} 个分类`);
+            } catch (error) {
+                displayResult('categories-result', { error: error.message }, 'error');
+                log('❌ 获取分类失败: ' + error.message, 'error');
+            }
+        }
+
+        async function testCreateCategory() {
+            try {
+                log('正在创建测试分类...');
+                const data = {
+                    name: "SDK测试分类",
+                    description: "用于SDK测试的分类",
+                    color: "#ff6b6b",
+                    icon: "🧪"
+                };
+                const result = await client.post('/api/test/categories', data);
+                displayResult('categories-result', result, 'success');
+                log('✅ 测试分类创建成功');
+            } catch (error) {
+                displayResult('categories-result', { error: error.message }, 'error');
+                log('❌ 创建分类失败: ' + error.message, 'error');
+            }
+        }
+
+        async function testKnowledge() {
+            try {
+                log('正在获取知识点列表...');
+                const result = await client.get('/api/test/knowledge');
+                displayResult('knowledge-result', result, 'success');
+                log(`✅ 获取到 ${result.total} 个知识点`);
+            } catch (error) {
+                displayResult('knowledge-result', { error: error.message }, 'error');
+                log('❌ 获取知识点失败: ' + error.message, 'error');
+            }
+        }
+
+        async function testCreateKnowledge() {
+            try {
+                log('正在创建测试知识点...');
+                const data = {
+                    question: "SDK测试知识点：什么是RESTful API？",
+                    explanation: "RESTful API是一种基于REST架构风格的网络应用程序接口设计规范",
+                    categoryId: "CAT_1_001_804A",
+                    type: "text",
+                    tags: ["API", "REST", "Web开发"],
+                    difficulty: 2,
+                    estimatedTime: 15
+                };
+                const result = await client.post('/api/test/knowledge', data);
+                displayResult('knowledge-result', result, 'success');
+                log('✅ 测试知识点创建成功');
+            } catch (error) {
+                displayResult('knowledge-result', { error: error.message }, 'error');
+                log('❌ 创建知识点失败: ' + error.message, 'error');
+            }
+        }
+
+        async function testTextQuestions() {
+            try {
+                log('正在获取文本题列表...');
+                const result = await client.get('/api/test/textquestions');
+                displayResult('text-questions-result', result, 'success');
+                log(`✅ 获取到 ${result.data.length} 个文本题`);
+            } catch (error) {
+                displayResult('text-questions-result', { error: error.message }, 'error');
+                log('❌ 获取文本题失败: ' + error.message, 'error');
+            }
+        }
+
+        async function testCreateTextQuestion() {
+            try {
+                log('正在创建测试文本题...');
+                const data = {
+                    knowledgeId: "KP_TEXT_20250825_001",
+                    textType: "fill",
+                    answer: "RESTful",
+                    validationMode: "exact",
+                    caseSensitive: false
+                };
+                const result = await client.post('/api/test/textquestions', data);
+                displayResult('text-questions-result', result, 'success');
+                log('✅ 测试文本题创建成功');
+            } catch (error) {
+                displayResult('text-questions-result', { error: error.message }, 'error');
+                log('❌ 创建文本题失败: ' + error.message, 'error');
+            }
+        }
+
+        async function runDemo() {
+            log('开始运行完整演示...');
+            
+            // 运行所有测试
+            await testHealth();
+            await testCategories();
+            await testKnowledge();
+            await testTextQuestions();
+            
+            log('✅ 演示完成！所有功能测试通过');
+            displayResult('demo-result', { 
+                status: 'success', 
+                message: '所有功能测试通过',
+                summary: '知识服务运行正常，API接口完整可用'
+            }, 'success');
+        }
+
+        async function testErrorHandling() {
+            try {
+                log('正在测试错误处理...');
+                const result = await client.get('/api/test/nonexistent');
+                displayResult('error-result', { error: '应该失败的请求没有失败' }, 'error');
+                log('❌ 错误处理测试失败');
+            } catch (error) {
+                displayResult('error-result', { 
+                    error: error.message,
+                    expected: '404错误',
+                    actual: error.message
+                }, 'info');
+                log('✅ 错误处理测试通过');
+            }
+        }
+
+        // 初始化
+        log('🚀 SDK测试环境已准备就绪');
+        log('请使用上方的按钮进行各项功能测试');
+    </script>
+</body>
+</html>

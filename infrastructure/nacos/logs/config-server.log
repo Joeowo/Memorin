@@ -1,0 +1,56 @@
+2025-08-25 11:20:28,257 INFO notifyConnectTimeout:100
+
+2025-08-25 11:20:28,261 INFO notifySocketTimeout:200
+
+2025-08-25 11:20:28,261 INFO isHealthCheck:true
+
+2025-08-25 11:20:28,261 INFO maxHealthCheckFailCount:12
+
+2025-08-25 11:20:28,261 INFO maxContent:10485760
+
+2025-08-25 11:32:41,832 INFO notifyConnectTimeout:100
+
+2025-08-25 11:32:41,834 INFO notifySocketTimeout:200
+
+2025-08-25 11:32:41,834 INFO isHealthCheck:true
+
+2025-08-25 11:32:41,834 INFO maxHealthCheckFailCount:12
+
+2025-08-25 11:32:41,834 INFO maxContent:10485760
+
+2025-08-25 11:34:19,201 INFO notifyConnectTimeout:100
+
+2025-08-25 11:34:19,206 INFO notifySocketTimeout:200
+
+2025-08-25 11:34:19,206 INFO isHealthCheck:true
+
+2025-08-25 11:34:19,206 INFO maxHealthCheckFailCount:12
+
+2025-08-25 11:34:19,206 INFO maxContent:10485760
+
+2025-08-25 11:34:23,006 WARN DumpService start
+
+2025-08-25 11:34:23,006 INFO start clear all config-info.
+
+2025-08-25 11:34:23,007 INFO clear all config-info success.
+
+2025-08-25 11:34:23,007 INFO clear all config-info-tenant success.
+
+2025-08-25 11:34:23,059 INFO All dump page size is set to 50 according to mem limit 495 MB
+
+2025-08-25 11:34:23,059 INFO start dump all config-info...
+
+2025-08-25 11:34:23,059 INFO success to  dump all config-info。
+
+2025-08-25 11:34:23,059 INFO start clear all config-info-beta.
+
+2025-08-25 11:34:23,059 INFO clear all config-info-beta success.
+
+2025-08-25 11:34:23,059 INFO clear all config-info-beta-tenant success.
+
+2025-08-25 11:34:23,074 INFO start clear all config-info-tag.
+
+2025-08-25 11:34:23,074 INFO clear all config-info-tag success.
+
+2025-08-25 11:34:23,074 INFO clear all config-info-tag-tenant success.
+

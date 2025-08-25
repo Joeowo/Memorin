@@ -3,6 +3,13 @@
     <div class="section-header">
       <h3>📁 分类管理</h3>
       <div class="list-controls">
+        <BaseSelect
+          v-model="selectedLevel"
+          :options="levelOptions"
+          placeholder="选择层级"
+          :disabled="store.loading"
+          class="level-select"
+        />
         <BaseInput
           v-model="searchQuery"
           placeholder="搜索分类..."
@@ -87,71 +94,115 @@
       </div>
     </div>
     
-    <!-- 知识点列表 -->
-    <div v-if="store.knowledgePoints.length > 0" class="knowledge-section">
-      <h4 class="section-title">💡 知识点列表</h4>
-      <div class="knowledge-grid">
-        <div
-          v-for="knowledge in filteredKnowledge"
-          :key="knowledge.id"
-          class="knowledge-card"
-          :class="{ 'selected': store.selectedKnowledgeIds.includes(knowledge.id) }"
+    <!-- 知识点筛选 -->
+    <div class="knowledge-filter-section">
+      <BaseButton
+        @click="showCategoryFilter = true"
+        variant="secondary"
+        class="filter-button"
+      >
+        🔍 按分类筛选
+        <span v-if="selectedCategories.length > 0" class="filter-count">
+          ({{ selectedCategories.length }})
+        </span>
+      </BaseButton>
+      
+      <div v-if="selectedCategories.length > 0" class="selected-categories">
+        <span
+          v-for="category in selectedCategories"
+          :key="category.id"
+          class="selected-tag"
         >
-          <!-- 选择框 -->
-          <input
-            type="checkbox"
-            :checked="store.selectedKnowledgeIds.includes(knowledge.id)"
-            @change.stop="store.toggleKnowledgeSelection(knowledge.id)"
-            class="knowledge-checkbox"
-          />
-          
-          <!-- 知识点类型标识 -->
-          <div class="knowledge-type">
-            {{ getTypeIcon(knowledge.type) }}
+          {{ getCategoryPath(category) }}
+          <button @click="removeCategory(category.id)" class="remove-btn">×</button>
+        </span>
+      </div>
+    </div>
+
+    <!-- 知识点列表 -->
+    <div v-if="filteredKnowledge.length > 0" class="knowledge-section">
+      <h4 class="section-title">💡 知识点列表 ({{ filteredKnowledge.length }})</h4>
+      
+      <!-- 层级化展示 -->
+      <div class="knowledge-hierarchy">
+        <div
+          v-for="item in hierarchicalKnowledge"
+          :key="item.key"
+          class="knowledge-group"
+        >
+          <!-- 分类标题 -->
+          <div
+            :class="`category-title level-${item.level}`"
+            :style="{ marginLeft: `${(item.level - 1) * 20}px` }"
+          >
+            {{ item.name }}
+            <BaseBadge v-if="item.count > 0" variant="info" size="small">{{ item.count }}</BaseBadge>
           </div>
           
-          <!-- 知识点内容 -->
-          <div class="knowledge-content">
-            <h5 class="knowledge-question">{{ knowledge.question }}</h5>
-            <p class="knowledge-explanation">{{ knowledge.explanation }}</p>
-            
-            <!-- 元信息 -->
-            <div class="knowledge-meta">
-              <span class="difficulty">{{ getDifficultyLabel(knowledge.difficulty) }}</span>
-              <span class="time">⏱️ {{ knowledge.estimatedTime }}分钟</span>
-              <span class="type">{{ getTypeLabel(knowledge.type) }}</span>
+          <!-- 知识点卡片 -->
+          <div
+            v-for="knowledge in item.knowledge"
+            :key="knowledge.id"
+            class="knowledge-card"
+            :class="{ 'selected': store.selectedKnowledgeIds.includes(knowledge.id) }"
+            :style="{ marginLeft: `${item.level * 20}px` }"
+          >
+              <!-- 选择框 -->
+            <input
+              type="checkbox"
+              :checked="store.selectedKnowledgeIds.includes(knowledge.id)"
+              @change.stop="store.toggleKnowledgeSelection(knowledge.id)"
+              class="knowledge-checkbox"
+            />
+          
+            <!-- 知识点类型标识 -->
+            <div class="knowledge-type">
+              {{ getTypeIcon(knowledge.type) }}
             </div>
-            
-            <!-- 标签 -->
-            <div v-if="knowledge.tags && knowledge.tags.length > 0" class="knowledge-tags">
-              <span v-for="tag in knowledge.tags" :key="tag" class="knowledge-tag">
-                {{ tag }}
-              </span>
-            </div>
-          </div>
           
-          <!-- 操作按钮 -->
-          <div class="knowledge-actions" @click.stop>
-            <BaseButton
-              @click="handleEditKnowledge(knowledge)"
-              variant="secondary"
-              size="small"
-              title="编辑知识点"
-            >
-              ✏️
-            </BaseButton>
-            <BaseButton
-              @click="handleDeleteKnowledge(knowledge)"
-              variant="danger"
-              size="small"
-              title="删除知识点"
-            >
-              🗑️
-            </BaseButton>
-          </div>
+            <!-- 知识点内容 -->
+            <div class="knowledge-content">
+              <h5 class="knowledge-question">{{ knowledge.question }}</h5>
+              <p class="knowledge-explanation">{{ knowledge.explanation }}</p>
+              
+              <!-- 元信息 -->
+              <div class="knowledge-meta">
+                <span class="difficulty">{{ getDifficultyLabel(knowledge.difficulty) }}</span>
+                <span class="time">⏱️ {{ knowledge.estimatedTime }}分钟</span>
+                <span class="type">{{ getTypeLabel(knowledge.type) }}</span>
+              </div>
+              
+              <!-- 标签 -->
+              <div v-if="knowledge.tags && knowledge.tags.length > 0" class="knowledge-tags">
+                <span v-for="tag in knowledge.tags" :key="tag" class="knowledge-tag">
+                  {{ tag }}
+                </span>
+              </div>
+            </div>
+          
+            <!-- 操作按钮 -->
+            <div class="knowledge-actions" @click.stop>
+              <BaseButton
+                @click="handleEditKnowledge(knowledge)"
+                variant="secondary"
+                size="small"
+                title="编辑知识点"
+              >
+                ✏️
+              </BaseButton>
+              <BaseButton
+                @click="handleDeleteKnowledge(knowledge)"
+                variant="danger"
+                size="small"
+                title="删除知识点"
+              >
+                🗑️
+              </BaseButton>
+            </div>
         </div>
       </div>
     </div>
+  </div>
     
     <!-- 统计信息 -->
     <div class="stats-footer">
@@ -160,6 +211,13 @@
         {{ store.stats.totalKnowledge }} 个知识点，
         {{ store.stats.totalTextQuestions }} 个文本题
       </p>
+    </div>
+    
+    <!-- 调试信息（开发环境可见） -->
+    <div v-if="isDev" class="debug-info">
+      <small>
+        数据已连接到真实后端服务 (localhost:8082)
+      </small>
     </div>
   </BaseCard>
 </template>
@@ -174,36 +232,139 @@ import BaseCard from '@/components/common/BaseCard.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseBadge from '@/components/common/BaseBadge.vue'
+import BaseSelect from '@/components/common/BaseSelect.vue'
+// import CategoryFilterModal from './CategoryFilterModal.vue'
 
 const store = useKnowledgeStore()
 
 // 响应式数据
 const searchQuery = ref('')
+const selectedLevel = ref(1)
+const showCategoryFilter = ref(false)
+const selectedCategoryIds = ref<string[]>([])
 
 // 计算属性
+const levelOptions = computed(() => {
+  const maxLevel = Math.max(...store.categories.map(cat => cat.level), 1)
+  return Array.from({ length: maxLevel }, (_, i) => ({
+    label: `Level ${i + 1}`,
+    value: i + 1
+  }))
+})
+
 const filteredCategories = computed(() => {
-  if (!searchQuery.value) {
-    return store.categories
+  let categories = store.categories
+  
+  // 按层级筛选
+  if (selectedLevel.value) {
+    categories = categories.filter(category => category.level === selectedLevel.value)
   }
   
-  const query = searchQuery.value.toLowerCase()
-  return store.categories.filter(category => 
-    category.name.toLowerCase().includes(query) ||
-    (category.description && category.description.toLowerCase().includes(query))
-  )
+  // 按搜索词筛选
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    categories = categories.filter(category => 
+      category.name.toLowerCase().includes(query) ||
+      (category.description && category.description.toLowerCase().includes(query))
+    )
+  }
+  
+  return categories
+})
+
+const selectedCategories = computed(() => {
+  return store.categories.filter(cat => selectedCategoryIds.value.includes(cat.id))
 })
 
 const filteredKnowledge = computed(() => {
-  if (!searchQuery.value) {
-    return store.knowledgePoints
+  let knowledge = store.knowledgePoints
+  
+  // 按分类筛选
+  if (selectedCategoryIds.value.length > 0) {
+    knowledge = knowledge.filter(k => 
+      selectedCategoryIds.value.includes(k.categoryId)
+    )
   }
   
-  const query = searchQuery.value.toLowerCase()
-  return store.knowledgePoints.filter(knowledge => 
-    knowledge.question.toLowerCase().includes(query) ||
-    knowledge.explanation.toLowerCase().includes(query) ||
-    (knowledge.tags && knowledge.tags.some(tag => tag.toLowerCase().includes(query)))
-  )
+  // 按搜索词筛选
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    knowledge = knowledge.filter(knowledge => 
+      knowledge.question.toLowerCase().includes(query) ||
+      knowledge.explanation.toLowerCase().includes(query) ||
+      (knowledge.tags && knowledge.tags.some(tag => tag.toLowerCase().includes(query)))
+    )
+  }
+  
+  return knowledge
+})
+
+const hierarchicalKnowledge = computed(() => {
+  if (selectedCategoryIds.value.length === 0) {
+    // 如果没有选择分类，按原始平铺方式展示
+    return [{
+      key: 'all',
+      name: '所有知识点',
+      level: 1,
+      count: filteredKnowledge.value.length,
+      knowledge: filteredKnowledge.value
+    }]
+  }
+  
+  // 构建层级化的展示结构
+  const result: any[] = []
+  const processedCategories = new Set<string>()
+  
+  // 获取所有选中的分类及其祖先
+  const categoriesWithAncestors = new Set<string>()
+  selectedCategoryIds.value.forEach(id => {
+    collectAncestors(id, categoriesWithAncestors)
+    categoriesWithAncestors.add(id)
+  })
+  
+  // 按层级排序展示
+  const sortedCategories = Array.from(categoriesWithAncestors)
+    .map(id => store.categories.find(cat => cat.id === id))
+    .filter(Boolean)
+    .sort((a, b) => {
+      if (a.level !== b.level) return a.level - b.level
+      if (a.parentId !== b.parentId) {
+        return (a.parentId || '').localeCompare(b.parentId || '')
+      }
+      return a.name.localeCompare(b.name)
+    })
+  
+  // 构建层级结构
+  sortedCategories.forEach(category => {
+    const knowledgeInCategory = filteredKnowledge.value.filter(
+      k => k.categoryId === category.id
+    )
+    
+    if (knowledgeInCategory.length > 0 || selectedCategoryIds.value.includes(category.id)) {
+      result.push({
+        key: category.id,
+        name: category.name,
+        level: category.level,
+        count: knowledgeInCategory.length,
+        knowledge: knowledgeInCategory,
+        category
+      })
+    }
+  })
+  
+  return result
+})
+
+function collectAncestors(categoryId: string, result: Set<string>) {
+  const category = store.categories.find(cat => cat.id === categoryId)
+  if (category?.parentId) {
+    result.add(category.parentId)
+    collectAncestors(category.parentId, result)
+  }
+}
+
+const isDev = computed(() => {
+  return import.meta.env.DEV
 })
 
 // 工具函数
@@ -238,6 +399,28 @@ function handleSearch() {
 function handleCategoryClick(category: CategoryData) {
   // 可以导航到分类详情或其他操作
   console.log('Category clicked:', category)
+}
+
+function getCategoryPath(category: CategoryData): string {
+  const path = [category.name]
+  let parent = store.categories.find(c => c.id === category.parentId)
+  while (parent) {
+    path.unshift(parent.name)
+    parent = store.categories.find(c => c.id === parent.parentId)
+  }
+  return path.join(' > ')
+}
+
+function removeCategory(categoryId: string) {
+  const index = selectedCategoryIds.value.indexOf(categoryId)
+  if (index > -1) {
+    selectedCategoryIds.value.splice(index, 1)
+  }
+}
+
+function handleCategoryFilterConfirm(selectedIds: string[]) {
+  selectedCategoryIds.value = selectedIds
+  showCategoryFilter.value = false
 }
 
 function handleEdit(category: CategoryData) {
@@ -298,8 +481,12 @@ async function handleDeleteKnowledge(knowledge: KnowledgeData) {
   align-items: center;
 }
 
+.level-select {
+  min-width: 120px;
+}
+
 .search-input {
-  min-width: 250px;
+  min-width: 200px;
 }
 
 .empty-state {
@@ -414,6 +601,114 @@ async function handleDeleteKnowledge(knowledge: KnowledgeData) {
 }
 
 /* 知识点列表样式 */
+.knowledge-filter-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filter-button {
+  align-self: flex-start;
+}
+
+.filter-count {
+  margin-left: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.selected-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.selected-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: #007bff;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.knowledge-section {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.knowledge-hierarchy {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.knowledge-group {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.category-title {
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.category-title.level-1 {
+  font-size: 1.2rem;
+  background: #e3f2fd;
+}
+
+.category-title.level-2 {
+  font-size: 1.1rem;
+  background: #f5f5f5;
+}
+
+.category-title.level-3 {
+  font-size: 1rem;
+  background: #fafafa;
+}
+
+.category-title.level-4,
+.category-title.level-5 {
+  font-size: 0.9rem;
+  background: #ffffff;
+}
+
+.empty-group {
+  padding: 1rem;
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+}
+
+.text-muted {
+  color: #6c757d;
+}
+
 .knowledge-section {
   margin-top: 3rem;
   padding-top: 2rem;
@@ -560,5 +855,15 @@ async function handleDeleteKnowledge(knowledge: KnowledgeData) {
   .knowledge-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.debug-info {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: #f0f8ff;
+  border-left: 3px solid #007bff;
+  color: #0066cc;
+  text-align: center;
+  font-size: 0.8rem;
 }
 </style> 

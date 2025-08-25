@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/D:\\CODE\\Memorin-rebuild\\docs/**)",
+      "Read(/D:\\CODE\\Memorin-rebuild\\docs\\sdk/**)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(powershell:*)",
+      "Bash(pkill:*)",
+      "Bash(npm run dev)",
+      "Bash(npm run build)",
+      "Bash(grep:*)",
+      "Bash(echo:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
