@@ -92,14 +92,10 @@ export const useKnowledgeStore = defineStore('knowledge', {
       this.setLoading(true)
       this.clearError()
       try {
-        const categories = await api.categories.getAll()
-        // 确保数据格式正确，处理可能的对象包装
-        this.categories = Array.isArray(categories) ? categories : (categories as any).data || []
+        this.categories = await api.categories.getAll()
         this.stats.totalCategories = this.categories.length
-        console.log(`📂 加载了 ${this.categories.length} 个分类`, this.categories)
       } catch (error) {
         this.setError(handleAPIError(error))
-        console.error('❌ 加载分类失败:', error)
       } finally {
         this.setLoading(false)
       }
@@ -109,14 +105,10 @@ export const useKnowledgeStore = defineStore('knowledge', {
       this.setLoading(true)
       this.clearError()
       try {
-        const knowledge = await api.knowledge.getAll()
-        // 确保数据格式正确
-        this.knowledgePoints = Array.isArray(knowledge) ? knowledge : (knowledge as any).data || []
+        this.knowledgePoints = await api.knowledge.getAll()
         this.stats.totalKnowledge = this.knowledgePoints.length
-        console.log(`💡 加载了 ${this.knowledgePoints.length} 个知识点`, this.knowledgePoints)
       } catch (error) {
         this.setError(handleAPIError(error))
-        console.error('❌ 加载知识点失败:', error)
       } finally {
         this.setLoading(false)
       }
@@ -126,14 +118,10 @@ export const useKnowledgeStore = defineStore('knowledge', {
       this.setLoading(true)
       this.clearError()
       try {
-        const textQuestions = await api.textQuestions.getAll()
-        // 确保数据格式正确
-        this.textQuestions = Array.isArray(textQuestions) ? textQuestions : (textQuestions as any).data || []
+        this.textQuestions = await api.textQuestions.getAll()
         this.stats.totalTextQuestions = this.textQuestions.length
-        console.log(`📝 加载了 ${this.textQuestions.length} 个文本题`, this.textQuestions)
       } catch (error) {
         this.setError(handleAPIError(error))
-        console.error('❌ 加载文本题失败:', error)
       } finally {
         this.setLoading(false)
       }
@@ -149,7 +137,7 @@ export const useKnowledgeStore = defineStore('knowledge', {
     
     // ========== 分类管理方法 ==========
     
-    async createCategory(data: { name: string; description?: string; icon?: string; color?: string; parentId?: string }) {
+    async createCategory(data: { name: string; description?: string; icon?: string; color?: string }) {
       this.setLoading(true)
       this.clearError()
       try {
@@ -165,7 +153,7 @@ export const useKnowledgeStore = defineStore('knowledge', {
       }
     },
 
-    async updateCategory(id: string, data: { name: string; description?: string; icon?: string; color?: string; parentId?: string }) {
+    async updateCategory(id: string, data: { name: string; description?: string; icon?: string; color?: string }) {
       this.setLoading(true)
       this.clearError()
       try {
@@ -249,23 +237,24 @@ export const useKnowledgeStore = defineStore('knowledge', {
       this.setLoading(true)
       this.clearError()
       try {
-        // 使用真实的SDK更新方法
-        const updatedKnowledge = await api.knowledge.update(id, {
-          question: data.question,
-          explanation: data.explanation,
-          type: data.type || this.knowledgePoints.find(k => k.id === id)?.type || 'text',
-          categoryName: data.categoryName || '',
-          tags: data.tags || [],
-          difficulty: data.difficulty || 3,
-          estimatedTime: data.estimatedTime || 15
-        })
+        // TODO: 添加SDK的knowledge.update方法后使用
+        // const updatedKnowledge = await api.knowledge.update(id, data)
         
-        // 更新本地状态
+        // 临时更新本地状态
         const index = this.knowledgePoints.findIndex(kp => kp.id === id)
         if (index !== -1) {
-          this.knowledgePoints[index] = updatedKnowledge
+          this.knowledgePoints[index] = {
+            ...this.knowledgePoints[index],
+            question: data.question,
+            explanation: data.explanation,
+            type: data.type || this.knowledgePoints[index].type,
+            tags: data.tags || this.knowledgePoints[index].tags,
+            difficulty: data.difficulty || this.knowledgePoints[index].difficulty,
+            estimatedTime: data.estimatedTime || this.knowledgePoints[index].estimatedTime
+          }
         }
-        return updatedKnowledge
+        console.log('Knowledge updated locally:', data)
+        return this.knowledgePoints[index]
       } catch (error) {
         this.setError(handleAPIError(error))
         throw error
@@ -278,10 +267,10 @@ export const useKnowledgeStore = defineStore('knowledge', {
       this.setLoading(true)
       this.clearError()
       try {
-        // 使用真实的SDK删除方法
-        await api.knowledge.delete(id)
+        // TODO: 添加SDK的knowledge.delete方法后使用
+        // await api.knowledge.delete(id)
         
-        // 更新本地状态
+        // 临时删除本地状态
         const index = this.knowledgePoints.findIndex(kp => kp.id === id)
         if (index !== -1) {
           this.knowledgePoints.splice(index, 1)
@@ -293,6 +282,8 @@ export const useKnowledgeStore = defineStore('knowledge', {
         if (selectionIndex !== -1) {
           this.selectedKnowledgeIds.splice(selectionIndex, 1)
         }
+        
+        console.log('Knowledge deleted locally:', id)
       } catch (error) {
         this.setError(handleAPIError(error))
         throw error

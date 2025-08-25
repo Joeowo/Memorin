@@ -68,12 +68,8 @@ class MemorinaAPIClient {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseURL}${endpoint}`
     
-    // 获取JWT token
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token')
-    
     const defaultHeaders = {
       'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
       ...options.headers
     }
 
@@ -180,7 +176,6 @@ class CategoryManager {
     icon?: string
     color?: string
     parentName?: string
-    parentId?: string
   }): Promise<CategoryData> {
     // 自动生成默认值
     const categoryData = {
@@ -188,13 +183,11 @@ class CategoryManager {
       description: input.description || `${input.name}相关知识点`,
       icon: input.icon || this.generateIcon(input.name),
       color: input.color || this.generateColor(input.name),
-      parentId: input.parentId
+      parentId: undefined as string | undefined
     }
 
-    // 解析父分类（优先使用parentId，其次使用parentName）
-    if (input.parentId) {
-      categoryData.parentId = input.parentId
-    } else if (input.parentName) {
+    // 解析父分类
+    if (input.parentName) {
       const parent = await this.findByName(input.parentName)
       if (!parent) {
         throw new MemorinaAPIError(`父分类 "${input.parentName}" 不存在`, 400)
@@ -212,15 +205,13 @@ class CategoryManager {
     description?: string
     icon?: string
     color?: string
-    parentId?: string
   }): Promise<CategoryData> {
     // 确保所有必填字段都有值
     const updateData = {
       name: input.name,
       description: input.description || `${input.name}相关知识点`,
       icon: input.icon || '📁',
-      color: input.color || '#667eea',
-      parentId: input.parentId
+      color: input.color || '#667eea'
     }
 
     const result = await this.client.put<CategoryData>(`/api/test/categories/${id}`, updateData)
@@ -585,31 +576,6 @@ export function handleAPIError(error: unknown): string {
     }
   }
   return '未知错误，请检查网络连接'
-}
-
-// ===== JWT认证工具 =====
-export class AuthManager {
-  static setToken(token: string): void {
-    localStorage.setItem('token', token)
-  }
-
-  static getToken(): string | null {
-    return localStorage.getItem('token') || sessionStorage.getItem('token')
-  }
-
-  static removeToken(): void {
-    localStorage.removeItem('token')
-    sessionStorage.removeItem('token')
-  }
-
-  static isAuthenticated(): boolean {
-    return !!this.getToken()
-  }
-
-  static getAuthHeaders(): Record<string, string> {
-    const token = this.getToken()
-    return token ? { 'Authorization': `Bearer ${token}` } : {}
-  }
 }
 
 // 默认导出

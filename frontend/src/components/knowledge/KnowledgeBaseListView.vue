@@ -3,15 +3,6 @@
     <div class="section-header">
       <h3>📁 分类管理</h3>
       <div class="list-controls">
-        <label class="filter-label">层级：</label>
-        <BaseSelect
-          v-model="selectedLevel"
-          :options="levelOptions"
-          placeholder="所有层级"
-          :disabled="store.loading"
-          class="level-select"
-          @change="(value) => console.log('🎯 Level select changed to:', value, typeof value)"
-        />
         <BaseInput
           v-model="searchQuery"
           placeholder="搜索分类..."
@@ -19,26 +10,7 @@
           :disabled="store.loading"
           class="search-input"
         />
-        <BaseButton
-          v-if="selectedLevel !== null || searchQuery"
-          @click="clearFilters"
-          variant="secondary"
-          size="small"
-          title="清除筛选"
-        >
-          🔄
-        </BaseButton>
       </div>
-    </div>
-    
-    <!-- 调试信息（开发环境可见） -->
-    <div v-if="isDev" class="debug-info">
-      <strong>调试信息：</strong><br>
-      总分类数：{{ store.categories.length }}<br>
-      筛选后分类数：{{ filteredCategories.length }}<br>
-      当前层级：{{ selectedLevel }}<br>
-      搜索词："{{ searchQuery }}"<br>
-      层级选项：{{ levelOptions.map(opt => opt.label).join(', ') }}
     </div>
     
     <!-- 空状态 -->
@@ -48,12 +20,8 @@
       <p v-if="searchQuery">
         没有找到包含 "{{ searchQuery }}" 的分类
       </p>
-      <p v-else-if="selectedLevel !== null">
-        当前层级没有分类，请选择其他层级或清除筛选
-      </p>
       <p v-else>
-        还没有创建任何分类，点击上方按钮创建第一个吧！r>
-        当前总分类数：{{ store.categories.length }}
+        还没有创建任何分类，点击上方按钮创建第一个吧！
       </p>
     </div>
     
@@ -119,115 +87,71 @@
       </div>
     </div>
     
-    <!-- 知识点筛选 -->
-    <div class="knowledge-filter-section">
-      <BaseButton
-        @click="showCategoryFilter = true"
-        variant="secondary"
-        class="filter-button"
-      >
-        🔍 按分类筛选
-        <span v-if="selectedCategories.length > 0" class="filter-count">
-          ({{ selectedCategories.length }})
-        </span>
-      </BaseButton>
-      
-      <div v-if="selectedCategories.length > 0" class="selected-categories">
-        <span
-          v-for="category in selectedCategories"
-          :key="category.id"
-          class="selected-tag"
-        >
-          {{ getCategoryPath(category) }}
-          <button @click="removeCategory(category.id)" class="remove-btn">×</button>
-        </span>
-      </div>
-    </div>
-
     <!-- 知识点列表 -->
-    <div v-if="filteredKnowledge.length > 0" class="knowledge-section">
-      <h4 class="section-title">💡 知识点列表 ({{ filteredKnowledge.length }})</h4>
-      
-      <!-- 层级化展示 -->
-      <div class="knowledge-hierarchy">
+    <div v-if="store.knowledgePoints.length > 0" class="knowledge-section">
+      <h4 class="section-title">💡 知识点列表</h4>
+      <div class="knowledge-grid">
         <div
-          v-for="item in hierarchicalKnowledge"
-          :key="item.key"
-          class="knowledge-group"
+          v-for="knowledge in filteredKnowledge"
+          :key="knowledge.id"
+          class="knowledge-card"
+          :class="{ 'selected': store.selectedKnowledgeIds.includes(knowledge.id) }"
         >
-          <!-- 分类标题 -->
-          <div
-            :class="`category-title level-${item.level}`"
-            :style="{ marginLeft: `${(item.level - 1) * 20}px` }"
-          >
-            {{ item.name }}
-            <BaseBadge v-if="item.count > 0" variant="info" size="small">{{ item.count }}</BaseBadge>
+          <!-- 选择框 -->
+          <input
+            type="checkbox"
+            :checked="store.selectedKnowledgeIds.includes(knowledge.id)"
+            @change.stop="store.toggleKnowledgeSelection(knowledge.id)"
+            class="knowledge-checkbox"
+          />
+          
+          <!-- 知识点类型标识 -->
+          <div class="knowledge-type">
+            {{ getTypeIcon(knowledge.type) }}
           </div>
           
-          <!-- 知识点卡片 -->
-          <div
-            v-for="knowledge in item.knowledge"
-            :key="knowledge.id"
-            class="knowledge-card"
-            :class="{ 'selected': store.selectedKnowledgeIds.includes(knowledge.id) }"
-            :style="{ marginLeft: `${item.level * 20}px` }"
-          >
-              <!-- 选择框 -->
-            <input
-              type="checkbox"
-              :checked="store.selectedKnowledgeIds.includes(knowledge.id)"
-              @change.stop="store.toggleKnowledgeSelection(knowledge.id)"
-              class="knowledge-checkbox"
-            />
-          
-            <!-- 知识点类型标识 -->
-            <div class="knowledge-type">
-              {{ getTypeIcon(knowledge.type) }}
+          <!-- 知识点内容 -->
+          <div class="knowledge-content">
+            <h5 class="knowledge-question">{{ knowledge.question }}</h5>
+            <p class="knowledge-explanation">{{ knowledge.explanation }}</p>
+            
+            <!-- 元信息 -->
+            <div class="knowledge-meta">
+              <span class="difficulty">{{ getDifficultyLabel(knowledge.difficulty) }}</span>
+              <span class="time">⏱️ {{ knowledge.estimatedTime }}分钟</span>
+              <span class="type">{{ getTypeLabel(knowledge.type) }}</span>
             </div>
-          
-            <!-- 知识点内容 -->
-            <div class="knowledge-content">
-              <h5 class="knowledge-question">{{ knowledge.question }}</h5>
-              <p class="knowledge-explanation">{{ knowledge.explanation }}</p>
-              
-              <!-- 元信息 -->
-              <div class="knowledge-meta">
-                <span class="difficulty">{{ getDifficultyLabel(knowledge.difficulty) }}</span>
-                <span class="time">⏱️ {{ knowledge.estimatedTime }}分钟</span>
-                <span class="type">{{ getTypeLabel(knowledge.type) }}</span>
-              </div>
-              
-              <!-- 标签 -->
-              <div v-if="knowledge.tags && knowledge.tags.length > 0" class="knowledge-tags">
-                <span v-for="tag in knowledge.tags" :key="tag" class="knowledge-tag">
-                  {{ tag }}
-                </span>
-              </div>
+            
+            <!-- 标签 -->
+            <div v-if="knowledge.tags && knowledge.tags.length > 0" class="knowledge-tags">
+              <span v-for="tag in knowledge.tags" :key="tag" class="knowledge-tag">
+                {{ tag }}
+              </span>
             </div>
+          </div>
           
-            <!-- 操作按钮 -->
-            <div class="knowledge-actions" @click.stop>
-              <BaseButton
-                @click="handleEditKnowledge(knowledge)"
-                variant="secondary"
-                size="small"
-                title="编辑知识点"
-              >
-                ✏️
-              </BaseButton>
-              <BaseButton
-                @click="handleDeleteKnowledge(knowledge)"
-                variant="danger"
-                size="small"
-                title="删除知识点"
-              >
-                🗑️
-              </BaseButton>
-            </div>
+          <!-- 操作按钮 -->
+          <div class="knowledge-actions" @click.stop>
+            <BaseButton
+              @click="handleEditKnowledge(knowledge)"
+              variant="secondary"
+              size="small"
+              title="编辑知识点"
+            >
+              ✏️
+            </BaseButton>
+            <BaseButton
+              @click="handleDeleteKnowledge(knowledge)"
+              variant="danger"
+              size="small"
+              title="删除知识点"
+            >
+              🗑️
+            </BaseButton>
+          </div>
         </div>
       </div>
     </div>
-  </div>
     
     <!-- 统计信息 -->
     <div class="stats-footer">
@@ -237,18 +161,11 @@
         {{ store.stats.totalTextQuestions }} 个文本题
       </p>
     </div>
-    
-    <!-- 调试信息（开发环境可见） -->
-    <div v-if="isDev" class="debug-info">
-      <small>
-        数据已连接到真实后端服务 (localhost:8082)
-      </small>
-    </div>
   </BaseCard>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useKnowledgeStore } from '@/stores/knowledgeStore'
 import type { CategoryData, KnowledgeData } from '@/utils/memorin-sdk'
 
@@ -257,173 +174,36 @@ import BaseCard from '@/components/common/BaseCard.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseBadge from '@/components/common/BaseBadge.vue'
-import BaseSelect from '@/components/common/BaseSelect.vue'
-// import CategoryFilterModal from './CategoryFilterModal.vue'
 
 const store = useKnowledgeStore()
 
 // 响应式数据
 const searchQuery = ref('')
-const selectedLevel = ref<number | null>(null) // 默认显示所有层级
-const showCategoryFilter = ref(false)
-const selectedCategoryIds = ref<string[]>([])
 
 // 计算属性
-const levelOptions = computed(() => {
-  const maxLevel = Math.max(...store.categories.map(cat => cat.level), 1)
-  const levelCounts = store.categories.reduce((acc, cat) => {
-    acc[cat.level] = (acc[cat.level] || 0) + 1
-    return acc
-  }, {} as Record<number, number>)
-  
-  return [
-    { label: '所有层级', value: null },
-    ...Array.from({ length: maxLevel }, (_, i) => {
-      const level = i + 1
-      const count = levelCounts[level] || 0
-      return {
-        label: `Level ${level} (${count})`,
-        value: level
-      }
-    })
-  ]
-})
-
 const filteredCategories = computed(() => {
-  console.log('🔍 Filtering categories:', {
-    totalCategories: store.categories.length,
-    selectedLevel: selectedLevel.value,
-    searchQuery: searchQuery.value,
-    allCategories: store.categories.map(c => ({ id: c.id, name: c.name, level: c.level }))
-  })
-  
-  let categories = [...store.categories] // Create a copy to avoid mutation
-  
-  console.log('🎯 Before filtering:', categories.length)
-  
-  // 按层级筛选
-  if (selectedLevel.value !== null && selectedLevel.value !== undefined && !isNaN(Number(selectedLevel.value))) {
-    const targetLevel = Number(selectedLevel.value)
-    const levelCategories = categories.filter(category => {
-      const catLevel = Number(category.level)
-      const matches = catLevel === targetLevel
-      console.log(`📊 Level ${catLevel} vs ${targetLevel}: ${matches ? '✅' : '❌'} ${category.name}`)
-      return matches
-    })
-    console.log(`📈 After level filter (Level ${targetLevel}): ${levelCategories.length}`)
-    categories = levelCategories
-  } else if (selectedLevel.value === null || selectedLevel.value === undefined || isNaN(Number(selectedLevel.value))) {
-    console.log(`📈 Skipping level filter (selectedLevel: ${selectedLevel.value})`)
+  if (!searchQuery.value) {
+    return store.categories
   }
   
-  // 按搜索词筛选
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    const searchCategories = categories.filter(category => 
-      category.name.toLowerCase().includes(query) ||
-      (category.description && category.description.toLowerCase().includes(query))
-    )
-    console.log(`🔍 After search filter: ${searchCategories.length}`)
-    categories = searchCategories
-  }
-  
-  console.log(`✅ Final filtered count: ${categories.length}`)
-  return categories
-})
-
-const selectedCategories = computed(() => {
-  return store.categories.filter(cat => selectedCategoryIds.value.includes(cat.id))
+  const query = searchQuery.value.toLowerCase()
+  return store.categories.filter(category => 
+    category.name.toLowerCase().includes(query) ||
+    (category.description && category.description.toLowerCase().includes(query))
+  )
 })
 
 const filteredKnowledge = computed(() => {
-  let knowledge = store.knowledgePoints
-  
-  // 按分类筛选
-  if (selectedCategoryIds.value.length > 0) {
-    knowledge = knowledge.filter(k => 
-      selectedCategoryIds.value.includes(k.categoryId)
-    )
+  if (!searchQuery.value) {
+    return store.knowledgePoints
   }
   
-  // 按搜索词筛选
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    knowledge = knowledge.filter(knowledge => 
-      knowledge.question.toLowerCase().includes(query) ||
-      knowledge.explanation.toLowerCase().includes(query) ||
-      (knowledge.tags && knowledge.tags.some(tag => tag.toLowerCase().includes(query)))
-    )
-  }
-  
-  return knowledge
-})
-
-const hierarchicalKnowledge = computed(() => {
-  if (selectedCategoryIds.value.length === 0) {
-    // 如果没有选择分类，按原始平铺方式展示
-    return [{
-      key: 'all',
-      name: '所有知识点',
-      level: 1,
-      count: filteredKnowledge.value.length,
-      knowledge: filteredKnowledge.value
-    }]
-  }
-  
-  // 构建层级化的展示结构
-  const result: any[] = []
-  const processedCategories = new Set<string>()
-  
-  // 获取所有选中的分类及其祖先
-  const categoriesWithAncestors = new Set<string>()
-  selectedCategoryIds.value.forEach(id => {
-    collectAncestors(id, categoriesWithAncestors)
-    categoriesWithAncestors.add(id)
-  })
-  
-  // 按层级排序展示
-  const sortedCategories = Array.from(categoriesWithAncestors)
-    .map(id => store.categories.find(cat => cat.id === id))
-    .filter(Boolean)
-    .sort((a, b) => {
-      if (a.level !== b.level) return a.level - b.level
-      if (a.parentId !== b.parentId) {
-        return (a.parentId || '').localeCompare(b.parentId || '')
-      }
-      return a.name.localeCompare(b.name)
-    })
-  
-  // 构建层级结构
-  sortedCategories.forEach(category => {
-    const knowledgeInCategory = filteredKnowledge.value.filter(
-      k => k.categoryId === category.id
-    )
-    
-    if (knowledgeInCategory.length > 0 || selectedCategoryIds.value.includes(category.id)) {
-      result.push({
-        key: category.id,
-        name: category.name,
-        level: category.level,
-        count: knowledgeInCategory.length,
-        knowledge: knowledgeInCategory,
-        category
-      })
-    }
-  })
-  
-  return result
-})
-
-function collectAncestors(categoryId: string, result: Set<string>) {
-  const category = store.categories.find(cat => cat.id === categoryId)
-  if (category?.parentId) {
-    result.add(category.parentId)
-    collectAncestors(category.parentId, result)
-  }
-}
-
-const isDev = computed(() => {
-  return import.meta.env.DEV
+  const query = searchQuery.value.toLowerCase()
+  return store.knowledgePoints.filter(knowledge => 
+    knowledge.question.toLowerCase().includes(query) ||
+    knowledge.explanation.toLowerCase().includes(query) ||
+    (knowledge.tags && knowledge.tags.some(tag => tag.toLowerCase().includes(query)))
+  )
 })
 
 // 工具函数
@@ -455,62 +235,9 @@ function handleSearch() {
   // 搜索在计算属性中实时处理
 }
 
-function clearFilters() {
-  selectedLevel.value = null
-  searchQuery.value = ''
-}
-
-// 调试：监视筛选器变化
-watch(selectedLevel, (newLevel, oldLevel) => {
-  console.log('🔄 Level filter changed:', { old: oldLevel, new: newLevel })
-})
-
-watch(() => store.categories, (newCategories) => {
-  console.log('📦 Categories updated:', newCategories.length)
-  console.log('📊 Categories details:', newCategories.map(c => ({
-    id: c.id,
-    name: c.name,
-    level: c.level,
-    levelType: typeof c.level
-  })))
-}, { immediate: true })
-
-// 添加组件挂载时的调试
-import { onMounted } from 'vue'
-onMounted(() => {
-  console.log('🚀 KnowledgeBaseListView mounted')
-  console.log('📊 Store categories on mount:', store.categories.length)
-  if (store.categories.length === 0) {
-    console.log('⚠️ No categories loaded, triggering load...')
-    store.loadCategories()
-  }
-})
-
 function handleCategoryClick(category: CategoryData) {
   // 可以导航到分类详情或其他操作
   console.log('Category clicked:', category)
-}
-
-function getCategoryPath(category: CategoryData): string {
-  const path = [category.name]
-  let parent = store.categories.find(c => c.id === category.parentId)
-  while (parent) {
-    path.unshift(parent.name)
-    parent = store.categories.find(c => c.id === parent.parentId)
-  }
-  return path.join(' > ')
-}
-
-function removeCategory(categoryId: string) {
-  const index = selectedCategoryIds.value.indexOf(categoryId)
-  if (index > -1) {
-    selectedCategoryIds.value.splice(index, 1)
-  }
-}
-
-function handleCategoryFilterConfirm(selectedIds: string[]) {
-  selectedCategoryIds.value = selectedIds
-  showCategoryFilter.value = false
 }
 
 function handleEdit(category: CategoryData) {
@@ -571,19 +298,8 @@ async function handleDeleteKnowledge(knowledge: KnowledgeData) {
   align-items: center;
 }
 
-.level-select {
-  min-width: 120px;
-}
-
-.filter-label {
-  color: #495057;
-  font-size: 0.9rem;
-  font-weight: 500;
-  align-self: center;
-}
-
 .search-input {
-  min-width: 200px;
+  min-width: 250px;
 }
 
 .empty-state {
@@ -698,114 +414,6 @@ async function handleDeleteKnowledge(knowledge: KnowledgeData) {
 }
 
 /* 知识点列表样式 */
-.knowledge-filter-section {
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.filter-button {
-  align-self: flex-start;
-}
-
-.filter-count {
-  margin-left: 0.25rem;
-  font-size: 0.8rem;
-}
-
-.selected-categories {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.selected-tag {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  background: #007bff;
-  color: white;
-  border-radius: 12px;
-  font-size: 0.8rem;
-}
-
-.remove-btn {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 1rem;
-  padding: 0;
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.knowledge-section {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e9ecef;
-}
-
-.knowledge-hierarchy {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.knowledge-group {
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.category-title {
-  padding: 0.75rem 1rem;
-  background: #f8f9fa;
-  font-weight: 600;
-  color: #2c3e50;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.category-title.level-1 {
-  font-size: 1.2rem;
-  background: #e3f2fd;
-}
-
-.category-title.level-2 {
-  font-size: 1.1rem;
-  background: #f5f5f5;
-}
-
-.category-title.level-3 {
-  font-size: 1rem;
-  background: #fafafa;
-}
-
-.category-title.level-4,
-.category-title.level-5 {
-  font-size: 0.9rem;
-  background: #ffffff;
-}
-
-.empty-group {
-  padding: 1rem;
-  color: #6c757d;
-  font-style: italic;
-  text-align: center;
-}
-
-.text-muted {
-  color: #6c757d;
-}
-
 .knowledge-section {
   margin-top: 3rem;
   padding-top: 2rem;
@@ -952,16 +560,5 @@ async function handleDeleteKnowledge(knowledge: KnowledgeData) {
   .knowledge-grid {
     grid-template-columns: 1fr;
   }
-}
-
-.debug-info {
-  margin: 1rem 0;
-  padding: 1rem;
-  background: #f0f8ff;
-  border: 1px solid #007bff;
-  border-radius: 8px;
-  color: #0066cc;
-  font-size: 0.8rem;
-  font-family: monospace;
 }
 </style> 

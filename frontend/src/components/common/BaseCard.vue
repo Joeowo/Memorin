@@ -39,7 +39,9 @@ const handleClick = (event: MouseEvent) => {
 
 <style scoped>
 .base-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(102, 126, 234, 0.1);
   border-radius: 20px;
   box-shadow: 

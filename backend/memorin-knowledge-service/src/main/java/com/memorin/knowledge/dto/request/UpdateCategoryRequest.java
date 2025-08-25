@@ -44,11 +44,6 @@ public class UpdateCategoryRequest {
     @Min(value = 0, message = "排序权重不能为负数")
     private Integer sortOrder;
 
-    /**
-     * 父分类ID（可选）
-     */
-    private String parentId;
-
     // 构造函数
     public UpdateCategoryRequest() {}
 
@@ -93,14 +88,6 @@ public class UpdateCategoryRequest {
         this.sortOrder = sortOrder;
     }
 
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
     @Override
     public String toString() {
         return "UpdateCategoryRequest{" +
@@ -109,7 +96,6 @@ public class UpdateCategoryRequest {
                 ", color='" + color + '\'' +
                 ", icon='" + icon + '\'' +
                 ", sortOrder=" + sortOrder +
-                ", parentId='" + parentId + '\'' +
                 '}';
     }
 } 

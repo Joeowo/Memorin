@@ -29,12 +29,12 @@ spring:
           service-type: review-management
           description: "Memorin复习管理服务 - SM-2算法、复习会话、错题管理"
   
-  # 数据源配置 - MySQL开发数据库
+  # 数据源配置 - H2开发数据库
   datasource:
-    url: jdbc:mysql://localhost:3306/memorin_review?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    driverClassName: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
+    url: jdbc:h2:mem:review_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: memorin
+    password: memorin_review_2025
     # H2控制台配置
     h2:
       console:
@@ -46,7 +46,7 @@ spring:
 
   # JPA配置
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
     show-sql: true

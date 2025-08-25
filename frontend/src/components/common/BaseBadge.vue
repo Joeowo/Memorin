@@ -179,13 +179,17 @@ const handleRemove = () => {
 /* 特殊变体 */
 .base-badge--difficulty {
   background: rgba(102, 126, 234, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   font-weight: 600;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
 }
 
 .base-badge--tag {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #667eea;
   border: 1px solid rgba(102, 126, 234, 0.2);
   border-radius: 12px;

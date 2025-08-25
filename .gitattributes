@@ -1,2 +1,0 @@
-backend/memorin-knowledge-service/logs/*.log filter=lfs diff=lfs merge=lfs -text
-infrastructure/nacos/target/*.jar filter=lfs diff=lfs merge=lfs -text

@@ -131,7 +131,9 @@ const handleFocus = (event: FocusEvent) => {
   font-size: 1rem;
   font-weight: 400;
   color: #2c3e50;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   box-sizing: border-box;
   outline: none;

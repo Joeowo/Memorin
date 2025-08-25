@@ -367,7 +367,9 @@ watch(formData, (newData, oldData) => {
 <style scoped>
 .base-form {
   width: 100%;
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(102, 126, 234, 0.2);
   border-radius: 20px;
   box-shadow: 
@@ -384,7 +386,9 @@ watch(formData, (newData, oldData) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 20px;
   z-index: 10;
   display: flex;

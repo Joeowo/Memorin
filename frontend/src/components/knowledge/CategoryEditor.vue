@@ -24,27 +24,6 @@
         <div v-if="errors.name" class="error-text">{{ errors.name }}</div>
       </div>
       
-      <!-- 父分类选择 -->
-      <div class="form-group">
-        <label for="parent-category" class="form-label">父分类（可选）</label>
-        <select
-          id="parent-category"
-          v-model="formData.parentId"
-          class="form-select"
-        >
-          <option :value="null">无父分类（顶级分类）</option>
-          <option 
-            v-for="category in availableParentCategories" 
-            :key="category.id"
-            :value="category.id"
-            :disabled="isCategoryDisabled(category.id)"
-          >
-            {{ getCategoryDisplayName(category) }}
-          </option>
-        </select>
-        <div v-if="errors.parentId" class="error-text">{{ errors.parentId }}</div>
-      </div>
-
       <!-- 分类描述 -->
       <div class="form-group">
         <label for="category-description" class="form-label">分类描述</label>
@@ -159,7 +138,6 @@ import BaseButton from '@/components/common/BaseButton.vue'
 // Props
 interface Props {
   category: CategoryData | null
-  availableCategories?: CategoryData[]
 }
 
 const props = defineProps<Props>()
@@ -176,8 +154,7 @@ const formData = ref<Partial<CategoryData>>({
   name: '',
   description: '',
   icon: '📁',
-  color: '#667eea',
-  parentId: null
+  color: '#667eea'
 })
 
 const errors = ref<Record<string, string>>({})
@@ -200,39 +177,11 @@ const colorOptions = [
 // 计算属性
 const isEditing = computed(() => !!props.category?.id)
 
-const availableParentCategories = computed(() => {
-  if (!props.availableCategories) return []
-  
-  return props.availableCategories.filter(category => {
-    // 编辑模式下，排除当前分类及其子分类
-    if (isEditing.value && props.category) {
-      return category.id !== props.category.id
-    }
-    return true
-  })
-})
-
 const isFormValid = computed(() => {
   return formData.value.name && 
          formData.value.name.trim().length > 0 &&
          !errors.value.name
 })
-
-// 辅助方法
-const getCategoryDisplayName = (category: CategoryData): string => {
-  const level = category.level || 1
-  const indent = '  '.repeat(level - 1)
-  return `${indent}${category.name}`
-}
-
-const isCategoryDisabled = (categoryId: string): boolean => {
-  // 编辑模式下，防止循环引用
-  if (isEditing.value && props.category) {
-    // 这里可以添加更复杂的循环引用检测逻辑
-    return categoryId === props.category.id
-  }
-  return false
-}
 
 // 表单验证
 function validateForm() {
@@ -282,8 +231,7 @@ onMounted(() => {
       name: props.category.name,
       description: props.category.description,
       icon: props.category.icon,
-      color: props.category.color,
-      parentId: props.category.parentId || null
+      color: props.category.color
     }
   }
 })
@@ -352,27 +300,6 @@ onMounted(() => {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.form-select {
-  padding: 0.75rem;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  background-color: white;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-}
-
-.form-select:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.form-select option:disabled {
-  color: #6c757d;
-  background-color: #f8f9fa;
 }
 
 .char-count {

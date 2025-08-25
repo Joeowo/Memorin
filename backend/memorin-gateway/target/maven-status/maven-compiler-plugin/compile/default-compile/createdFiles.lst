@@ -1,8 +1,6 @@
 com\memorin\gateway\config\GatewayConfig.class
 com\memorin\gateway\config\CorsConfig.class
-com\memorin\gateway\config\SpringDocConfig.class
 com\memorin\gateway\controller\GatewayController.class
 com\memorin\gateway\config\OpenApiConfig.class
-com\memorin\gateway\controller\ApiDocsController.class
 com\memorin\gateway\config\GlobalExceptionHandler.class
 com\memorin\gateway\GatewayApplication.class
