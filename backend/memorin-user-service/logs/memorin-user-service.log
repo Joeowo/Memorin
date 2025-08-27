@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 2025-08-25 11:21:25 [main] INFO  c.a.n.c.env.SearchableProperties - properties search order:PROPERTIES->JVM->ENV->DEFAULT_SETTING
 2025-08-25 11:21:26 [main] INFO  c.m.user.UserServiceApplication - Starting UserServiceApplication using Java 1.8.0_451 on WIN-C3D985L1HJN with PID 79696 (D:\CODE\Memorin-rebuild\backend\memorin-user-service\target\classes started by Mechrevo in D:\CODE\Memorin-rebuild\backend\memorin-user-service)
 2025-08-25 11:21:26 [main] DEBUG c.m.user.UserServiceApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
@@ -4700,3 +4701,8 @@ Action:
 
 Identify and stop the process that's listening on port 8081 or configure this application to listen on another port.
 
+=======
+2025-08-28 06:55:29 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-28 06:55:29 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - MemorinUserPool - Shutdown initiated...
+2025-08-28 06:55:29 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - MemorinUserPool - Shutdown completed.
+>>>>>>> Stashed changes

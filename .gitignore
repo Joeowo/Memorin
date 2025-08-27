@@ -1,4 +1,8 @@
+# Nacos
 infrastructure/nacos/target/*.jar
-backend/memorin-knowledge-service/logs/*.log
-backend/memorin-knowledge-service/logs/*.log
-infrastructure/nacos/target/*.jar
+
+# 所有服务的日志文件
+**/logs/
+backend/*/logs/*.log
+backend/*/logs/*.log.gz
+backend/*/logs/*.log.*
